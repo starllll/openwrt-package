@@ -87,6 +87,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.VERSION }}  # 使用生成的版本号作为 release 的标签名
+          tag_name: v20240724  # 使用生成的版本号作为 release 的标签名
           body_path: ${{ env.OPENWRT_ROOT_PATH }}/artifact/release.txt  # 发布说明文件的路径
           files: ${{ env.OPENWRT_ROOT_PATH }}/artifact/*  # 要上传的固件文件所在的路径
