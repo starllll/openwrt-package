@@ -76,33 +76,17 @@ jobs:
           name: ${{ env.PACKAGE_NAME }}
           path: ${{ env.OPENWRT_ROOT_PATH }}/artifact/*
           
-      - name: 创建发布
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v1.0.0  # 可以根据需要设置发布的标签名
-          release_name: Release v1.0.0  # 发布的标题
-          body: |
-            Release v1.0.0
+      - name: 准备发布信息
+        run: |
+          VERSION=$(date +'%Y%m%d%H%M')
+          echo "Version: $VERSION" > ${{ env.OPENWRT_ROOT_PATH }}/artifact/release.txt
 
-      - name: 上传 PACKAGE_NAME
-        uses: actions/upload-release-asset@v1
+      - name: 上传固件到 release
+        uses: softprops/action-gh-release@v1
+        if: success()  # 只有当之前的步骤成功时才执行
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.OPENWRT_ROOT_PATH }}/artifact/${{ env.PACKAGE_NAME }}*.ipk
-          asset_name: ${{ env.PACKAGE_NAME }}-${{ github.run_number }}.ipk
-          asset_content_type: application/ipk
-
-      - name: 上传 PACKAGE_I18N_NAME
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.OPENWRT_ROOT_PATH }}/artifact/${{ env.PACKAGE_I18N_NAME }}*.ipk
-          asset_name: ${{ env.PACKAGE_I18N_NAME }}-${{ github.run_number }}.ipk
-          asset_content_type: application/ipk
+          tag_name: ${{ env.VERSION }}  # 使用生成的版本号作为 release 的标签名
+          body_path: ${{ env.OPENWRT_ROOT_PATH }}/artifact/release.txt  # 发布说明文件的路径
+          files: ${{ env.OPENWRT_ROOT_PATH }}/artifact/*  # 要上传的固件文件所在的路径
