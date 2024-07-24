@@ -67,7 +67,6 @@ jobs:
       - name: 准备 artifact
         working-directory: ${{ env.OPENWRT_ROOT_PATH }}
         run: |
-          ls -l ./bin/packages
           mkdir -p ./artifact
           cp -rf $(find ./bin/packages/ -type f -name "${{ env.PACKAGE_NAME }}*.ipk" -o -name "${{ env.PACKAGE_I18N_NAME }}*.ipk") ./artifact || cp -rf $(find ./bin/targets/ -type f -name "*.ipk") ./artifact || cp -rf $(find ./bin/packages/ -type f -name "*.ipk") ./artifact || exit 0
 
@@ -80,7 +79,9 @@ jobs:
       - name: 准备发布信息
         run: |
           export VERSION=$(date +'%Y%m%d%H%M')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "Version: $VERSION" > ${{ env.OPENWRT_ROOT_PATH }}/artifact/release.txt
+          ls -l ./bin/packages >> ${{ env.OPENWRT_ROOT_PATH }}/artifact/release.txt
 
       - name: 上传固件到 release
         uses: softprops/action-gh-release@v1
