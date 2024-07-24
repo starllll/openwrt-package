@@ -78,7 +78,7 @@ jobs:
           
       - name: 准备发布信息
         run: |
-          VERSION=$(date +'%Y%m%d%H%M')
+          export VERSION=$(date +'%Y%m%d%H%M')
           echo "Version: $VERSION" > ${{ env.OPENWRT_ROOT_PATH }}/artifact/release.txt
 
       - name: 上传固件到 release
