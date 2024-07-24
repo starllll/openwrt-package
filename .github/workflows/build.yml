@@ -67,7 +67,7 @@ jobs:
       - name: 准备 artifact
         working-directory: ${{ env.OPENWRT_ROOT_PATH }}
         run: |
-          ll ./bin/packages
+          ls -l ./bin/packages
           mkdir -p ./artifact
           cp -rf $(find ./bin/packages/ -type f -name "${{ env.PACKAGE_NAME }}*.ipk" -o -name "${{ env.PACKAGE_I18N_NAME }}*.ipk") ./artifact || cp -rf $(find ./bin/targets/ -type f -name "*.ipk") ./artifact || cp -rf $(find ./bin/packages/ -type f -name "*.ipk") ./artifact || exit 0
 
