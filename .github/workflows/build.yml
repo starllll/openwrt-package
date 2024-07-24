@@ -75,3 +75,25 @@ jobs:
         with:
           name: ${{ env.PACKAGE_NAME }}
           path: ${{ env.OPENWRT_ROOT_PATH }}/artifact/*
+          
+      - name: 创建发布
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v1.0.0  # 可以根据需要设置发布的标签名
+          release_name: Release v1.0.0  # 发布的标题
+          body: |
+            Release v1.0.0
+
+      - name: 上传发布产物
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.OPENWRT_ROOT_PATH }}/artifact/*
+          asset_name: ${{ env.PACKAGE_NAME }}-${{ github.run_number }}.tar.gz  # 上传的产物名称，这里假设使用了 GitHub Actions 提供的 run_number 作为后缀
+          asset_content_type: application/gzip
